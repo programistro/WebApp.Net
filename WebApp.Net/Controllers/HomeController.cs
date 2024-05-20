@@ -29,20 +29,20 @@ public class HomeController : Controller
             return View();
         }
 
-        var items = _context.Files.Where(x => x.Id == url);
+        var items = _context.Files.Where(x => x.IdImage == url);
 
-        IFormFileCollection collection = new FormFileCollection();
-        
-        foreach (var filePath in items)
+        List<string> images = new();
+
+        foreach (var item in items)
         {
-            collection.Append(_service.CreateMockFormFile(filePath.Path));
+            images.Add(item.Name);
         }
-
+        
         ImageViewModel viewModel = new()
         {
-            Images = collection
+            ImagesNames = images
         };
-
+        
         return View(viewModel);
     }
 
