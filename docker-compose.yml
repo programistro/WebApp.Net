@@ -1,0 +1,6 @@
+﻿services:
+  webapp.net:
+    image: webapp.net
+    build:
+      context: .
+      dockerfile: WebApp.Net/Dockerfile
