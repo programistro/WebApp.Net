@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
     @model ImageViewModel
+    @inject HttpContextAccessor HttpContextAccessor
 }
 
 @if (Model == null)
@@ -14,16 +15,12 @@
                 <input type="file" id="imageUpload1" multiple accept="image/*" asp-for="Images">
                 <label for="imageUpload1" class="upload-button1">Загрузить изображение</label>
             </div>
-            @* <div class="upload-container" style="margin-left: 10px;"> *@
-            @*     <input type="file" id="imageUpload2" accept="image/*"> *@
-            @*     <label for="imageUpload2" class="upload-button2">Загрузить изображение</label> *@
-            @* </div> *@
         
             @if (ViewData["Url"] != null)
             {
                 <p style="text-align:center; font-size: 16px;margin-top:20px;">Ваша сыллка:</p>
                 <p style="text-align:center; font-size: 16px; cursor: pointer;  color: blue;
-            text-decoration: underline;" d="text-to-copy" onclick="copyToClipboard(this.innerText)">@ViewBag.Url</p>
+            text-decoration: underline;" d="text-to-copy" onclick="copyToClipboard(this.innerText)">https://@Url.ActionContext.HttpContext.Request.Host?url=@ViewBag.Url</p>
             }
 
             </body>
@@ -32,8 +29,6 @@
 }
 else
 {
-    <p>Вот ваши изображения</p>
-    
     <div style="display: flex;
     justify-content: center;
     align-items: center; flex-direction: row;">
