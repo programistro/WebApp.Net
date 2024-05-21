@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using WebApp.Net.Data;
+using WebApp.Net.Models;
 using WebApp.Net.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,9 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<AppService>();
-// builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<HttpContextAccessor>();
+builder.Services.AddDbContextFactory<UserDbContext>();
 builder.Services.AddDbContextFactory<AppDbContext>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie();
 
 var app = builder.Build();
 
@@ -25,7 +30,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseAuthentication();   // добавление middleware аутентификации 
+app.UseAuthorization();   // добавление middleware авторизации 
 
 app.MapControllerRoute(
     name: "default",

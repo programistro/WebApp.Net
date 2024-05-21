@@ -38,9 +38,12 @@ public class HomeController : Controller
             images.Add(item.Name);
         }
         
-        ImageViewModel viewModel = new()
+        MainViewModel viewModel = new()
         {
-            ImagesNames = images
+            Images = new ImageViewModel()
+            {
+                ImagesNames = images
+            }
         };
         
         return View(viewModel);
@@ -52,7 +55,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult UploadImages(ImageViewModel files)
+    public IActionResult UploadImages(MainViewModel files)
     {
         Guid guid = Guid.NewGuid();
 
@@ -65,7 +68,7 @@ public class HomeController : Controller
             IdImage = urlHash
         };
         _context.Users.Add(user);
-        foreach (var formFile in files.Images)
+        foreach (var formFile in files.Images.Images)
         {
             if (formFile.Length > 0)
             {

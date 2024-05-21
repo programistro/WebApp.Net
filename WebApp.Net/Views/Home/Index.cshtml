@@ -1,7 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-    @model ImageViewModel
-    @inject HttpContextAccessor HttpContextAccessor
+    @model MainViewModel
 }
 
 @if (Model == null)
@@ -12,7 +11,7 @@
     align-items: center; flex-direction: column;">
             <body>
             <div class="upload-container">
-                <input type="file" id="imageUpload1" multiple accept="image/*" asp-for="Images">
+                <input type="file" id="imageUpload1" multiple accept="image/*" asp-for="Images.Images">
                 <label for="imageUpload1" class="upload-button1">Загрузить изображение</label>
             </div>
         
@@ -32,15 +31,19 @@ else
     <div style="display: flex;
     justify-content: center;
     align-items: center; flex-direction: row;">
-        @foreach (var file in Model.ImagesNames)
+        @foreach (var file in Model.Images.ImagesNames)
         {
-        <div class="upload-container1" style="margin-left: 15px;">
-            <img src="@Url.Content($"/Image/{file}")" alt="" style=" width: 300px; height: 200px; object-fit: contain;"/>
-        </div>
+            <div class="upload-container1" style="margin-left: 15px;">
+                <img src="@Url.Content($"/Image/{file}")" alt="" style=" width: 300px; height: 200px; object-fit: contain;"/>
+            </div>
         }
     </div>
+    <div style="justify-self: center; align-items: center; display: flex; flex-direction: row;">
+        <form method="post">
+            @* <button class="btn btn-primary">Выбрать</button> *@
+        </form>
+    </div>
 }
-
 <!-- Для демонстрации предпросмотра изображения -->
 <img class="preview" style="display:none; max-width: 300px; margin-top: 20px;"> 
 
