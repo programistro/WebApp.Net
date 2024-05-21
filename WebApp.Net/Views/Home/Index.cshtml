@@ -62,12 +62,15 @@ else
         position: relative;
         width: 300px; /* Изменяем размер на квадратный */
         height: 250px;
-        border: 4px solid #b6b6bd; /* Добавляем рамку вокруг кнопки */
-    //cursor: pointer;
+        border: 4px solid #b6b6bd; 
         display: flex;
         justify-content: center;
         align-items: center;
         box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* Внутренняя тень */
+    }
+
+    .active {
+        border: 4px solid #23ae0e;
     }
 
     #imageUpload1 {
@@ -160,4 +163,28 @@ else
             //alert('Не удалось скопировать текст. Пожалуйста, попробуйте снова.');
         }
     }
+
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var containers = document.querySelectorAll('.upload-container1');
+        var selectedContainers = [];
+
+        containers.forEach(function(container) {
+            container.addEventListener('click', function() {
+                if (selectedContainers.includes(this)) {
+                    const index = selectedContainers.indexOf(this);
+                    selectedContainers.splice(index, 1);
+                    this.classList.remove('active');
+                } else {
+                    if (selectedContainers.length >= 2) {
+                        return;
+                    }
+                    selectedContainers.push(this);
+                    this.classList.add('active');
+                }
+            });
+        });
+    });
 </script>
