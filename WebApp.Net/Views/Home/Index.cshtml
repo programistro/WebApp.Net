@@ -15,6 +15,10 @@
                 <label for="imageUpload1" class="upload-button1">Загрузить изображение</label>
             </div>
         
+            <div style="display: flex; justify-content: center; align-items: center; flex-direction: row;">
+                <button class="btn btn-primary" type="submit" style="margin-top: 10px;">Загрузить</button>
+            </div>
+            
             @if (ViewData["Url"] != null)
             {
                 <p style="text-align:center; font-size: 16px;margin-top:20px;">Ваша сыллка:</p>
@@ -34,18 +38,44 @@ else
         @foreach (var file in Model.Images.ImagesNames)
         {
             <div class="upload-container1" style="margin-left: 15px;">
-                <img src="@Url.Content($"/Image/{file}")" alt="" style=" width: 300px; height: 200px; object-fit: contain;"/>
+                <img src="@Url.Content($"/Image/{file}")" alt="" style=" width: 300px; height: 200px; object-fit: contain;" data-file-name="@file"/>
             </div>
         }
     </div>
-    <div style="justify-self: center; align-items: center; display: flex; flex-direction: row;">
-        <form method="post">
-            @* <button class="btn btn-primary">Выбрать</button> *@
+    <div style="display: flex; justify-content: center; align-items: center; flex-direction: row;">
+        <form method="post" asp-action="SelectImages" id="imageForm">
+            <input type="hidden" name="selectedImages" id="selectedImages">
+            <input type="hidden" name="id_url" id="id_url">
+            <button class="btn btn-primary" style="margin-top: 10px;" id="submit_b">Выбрать</button>
         </form>
     </div>
 }
 <!-- Для демонстрации предпросмотра изображения -->
-<img class="preview" style="display:none; max-width: 300px; margin-top: 20px;"> 
+<img class="preview" style="display:none; max-width: 300px; margin-top: 20px;">
+
+<script>
+    document.getElementById('submit_b').addEventListener('click', function(event) {
+        event.preventDefault(); // Предотвращаем стандартное поведение кнопки
+
+        // Собираем имена файлов из активных img элементов
+        var selectedFiles = Array.from(document.querySelectorAll('.upload-container1.active img[data-file-name]')).map(img => img.dataset.fileName);
+
+        // Добавляем имена файлов в скрытое поле формы
+        document.getElementById('selectedImages').value = JSON.stringify(selectedFiles);
+
+        // Получаем значение параметра url из URL
+        var urlParam = getUrlParameter('url');
+
+        // Добавляем параметр url в форму как скрытое поле
+        document.getElementById('id_url').value = urlParam; // Убедитесь, что это поле существует
+        // Отправляем форму
+        document.getElementById('imageForm').submit();
+    });
+    function getUrlParameter(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+</script>
 
 <style>
 
@@ -144,9 +174,9 @@ else
         }
     });
 
-    document.getElementById('imageUpload1').addEventListener('change', function() {
-        document.getElementById('upload-form').submit();
-    });
+    //document.getElementById('imageUpload1').addEventListener('change', function() {
+    //    document.getElementById('upload-form').submit();
+    //});
 
     document.getElementById('imageUpload2').addEventListener('change', function(e) {
         var fileName = e.target.files[0].name; // Получаем имя файла

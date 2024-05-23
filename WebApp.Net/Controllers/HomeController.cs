@@ -29,24 +29,33 @@ public class HomeController : Controller
             return View();
         }
 
-        var items = _context.Files.Where(x => x.IdImage == url);
+        var user = _context.Users.FirstOrDefault(x => x.Url == url);
 
-        List<string> images = new();
+        if (user != null)
+        {
+            var items = _context.Files.Where(x => x.IdImage == url);
 
-        foreach (var item in items)
-        {
-            images.Add(item.Name);
-        }
-        
-        MainViewModel viewModel = new()
-        {
-            Images = new ImageViewModel()
+            List<string> images = new();
+
+            foreach (var item in items)
             {
-                ImagesNames = images
+                images.Add(item.Name);
             }
-        };
         
-        return View(viewModel);
+            MainViewModel viewModel = new()
+            {
+                Images = new ImageViewModel()
+                {
+                    ImagesNames = images
+                }
+            };
+        
+            return View(viewModel);
+        }
+        else
+        {
+            return View("Error");
+        }
     }
 
     public IActionResult Privacy()
@@ -101,10 +110,44 @@ public class HomeController : Controller
         
         return View("Index");
     }
+    
+    [HttpPost]
+    public IActionResult SelectImages(string[] selectedImages, string id_url)
+    {
+        if (selectedImages == null || !selectedImages.Any())
+        {
+            return RedirectToAction("Index");
+        }
+
+        string line = "";
+        
+        foreach (var imageName in selectedImages)
+        {
+            line += imageName + ";";
+            Console.WriteLine($"Selected image: {imageName}");
+        }
+
+        var user = _context.Users.FirstOrDefault(x => x.Url == id_url);
+
+        if (user != null)
+        {
+            user.SelectedImages = line;
+            user.Url = "";
+
+            _context.Users.Update(user);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");   
+        }
+        else
+        {
+            return View("Error");
+        }
+    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        return View();
     }
 }
