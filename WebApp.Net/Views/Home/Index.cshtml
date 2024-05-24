@@ -28,6 +28,8 @@
 
             </body>
         </div>
+        <div style="display: flex; justify-content: center; align-items: center; flex-direction: row; margin-top: 10px;" id="cont">
+        </div>
     </form>
 }
 else
@@ -168,32 +170,25 @@ else
 <script>
     document.getElementById('imageUpload1').addEventListener('change', function(e) {
         var fileName = e.target.files[0].name; // Получаем имя файла
-        var labelElement = document.querySelector('.upload-button1'); // Находим элемент label
-        if(labelElement) { // Проверяем, существует ли элемент label
-            labelElement.textContent = fileName; // Меняем текст на имя файла
+        var labelElement = document.querySelector('.upload-button1');
+        if(labelElement) {
+            labelElement.textContent = fileName; 
         }
     });
 
-    //document.getElementById('imageUpload1').addEventListener('change', function() {
-    //    document.getElementById('upload-form').submit();
-    //});
-
     document.getElementById('imageUpload2').addEventListener('change', function(e) {
         var fileName = e.target.files[0].name; // Получаем имя файла
-        var labelElement = document.querySelector('.upload-button2'); // Находим элемент label
-        if(labelElement) { // Проверяем, существует ли элемент label
-            labelElement.textContent = fileName; // Меняем текст на имя файла
+        var labelElement = document.querySelector('.upload-button2');
+        if(labelElement) { 
+            labelElement.textContent = fileName;
         }
     });
 
     async function copyToClipboard(text) {
         try {
-            // Используем Clipboard API для копирования текста
             await navigator.clipboard.writeText(text);
-            //alert('Текст успешно скопирован в буфер обмена!');
         } catch (err) {
             console.error('Ошибка при копировании текста:', err);
-            //alert('Не удалось скопировать текст. Пожалуйста, попробуйте снова.');
         }
     }
 
@@ -219,5 +214,42 @@ else
                 }
             });
         });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var imageInput = document.getElementById('imageUpload1');
+        imageInput.addEventListener('change', handleImageUpload);
+
+        function handleImageUpload(event) {
+            var files = event.target.files;
+            var container = document.getElementById('cont'); // Предполагается, что это общий контейнер для всех изображений
+
+            Array.from(files).forEach(function(file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var div = document.createElement('div');
+                    div.className = 'upload-container1';
+                    div.style.marginLeft = '15px';
+
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '300px';
+                    img.style.height = '200px';
+                    img.style.objectFit = 'contain';
+
+                    div.appendChild(img);
+
+                    // Добавляем новый div перед последним child контейнера
+                    if (container.lastElementChild) {
+                        container.insertBefore(div, container.lastElementChild);
+                    } else {
+                        container.appendChild(div); // Если контейнер пуст, добавляем div в конец
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
     });
 </script>
