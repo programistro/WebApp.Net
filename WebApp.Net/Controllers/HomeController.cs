@@ -33,29 +33,61 @@ public class HomeController : Controller
 
         if (user != null)
         {
-            var items = _context.Files.Where(x => x.IdImage == url);
-
-            List<string> images = new();
-
-            foreach (var item in items)
+            if (user.UrlValid == false)
             {
-                images.Add(item.Name);
-            }
-        
-            MainViewModel viewModel = new()
-            {
-                Images = new ImageViewModel()
+                var items = _context.Files.Where(x => x.IdImage == url);
+
+                List<string> images = new();
+
+                foreach (var item in items)
                 {
-                    ImagesNames = images
+                    images.Add(item.Name);
                 }
-            };
-        
-            return View(viewModel);
+
+                MainViewModel viewModel = new()
+                {
+                    Images = new ImageViewModel()
+                    {
+                        ImagesNames = images
+                    }
+                };
+
+                return View(viewModel);
+            }
+            else 
+            if (user.UrlValid == true) 
+            {
+
+                var namesImg = user.SelectedImages.Remove(user.SelectedImages.Length - 1);
+
+                namesImg = namesImg.Trim('[', ']').Replace("\\\"", "\"").TrimEnd(']');
+
+                string[] fileNames = namesImg.Split(',');
+
+                List<string> filteredFileNames = new List<string>(fileNames.Length);
+                foreach (string fileName in fileNames)
+                {
+                    filteredFileNames.Add(fileName.Trim('"', '"'));
+                }
+
+                MainViewModel viewModel = new()
+                {
+                    Images = new ImageViewModel()
+                    {
+                        ImagesNames = filteredFileNames
+                    },
+                    IsValidUrl = true
+                };
+
+
+                return View(viewModel);
+            }
         }
         else
         {
             return View("Error");
         }
+        return View();
     }
 
     public IActionResult Privacy()
@@ -74,6 +106,7 @@ public class HomeController : Controller
         {
             Id = Guid.NewGuid().ToString("N"),
             Url = urlHash,
+            UrlValid = false,
             IdImage = urlHash
         };
         _context.Users.Add(user);
@@ -132,7 +165,7 @@ public class HomeController : Controller
         if (user != null)
         {
             user.SelectedImages = line;
-            user.Url = "";
+            user.UrlValid = true;
 
             _context.Users.Update(user);
             _context.SaveChanges();

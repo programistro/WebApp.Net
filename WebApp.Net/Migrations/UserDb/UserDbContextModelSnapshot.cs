@@ -202,6 +202,9 @@ namespace WebApp.Net.Migrations.UserDb
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("UrlValid")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");

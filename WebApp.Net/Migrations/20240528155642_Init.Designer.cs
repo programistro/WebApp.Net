@@ -11,7 +11,7 @@ using WebApp.Net.Data;
 namespace WebApp.Net.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240525105536_Init")]
+    [Migration("20240528155642_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -94,6 +94,9 @@ namespace WebApp.Net.Migrations
 
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("UrlValid")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
                         .HasColumnType("TEXT");

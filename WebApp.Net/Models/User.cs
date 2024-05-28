@@ -12,5 +12,7 @@ public class User : IdentityUser
     
     public string? Url { get; set; }
     
+    public bool UrlValid { get; set; }
+    
     public string? SelectedImages { get; set; }
 }
