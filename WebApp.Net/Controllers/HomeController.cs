@@ -57,7 +57,6 @@ public class HomeController : Controller
             else 
             if (user.UrlValid == true) 
             {
-
                 var namesImg = user.SelectedImages.Remove(user.SelectedImages.Length - 1);
 
                 namesImg = namesImg.Trim('[', ']').Replace("\\\"", "\"").TrimEnd(']');
@@ -65,20 +64,41 @@ public class HomeController : Controller
                 string[] fileNames = namesImg.Split(',');
 
                 List<string> filteredFileNames = new List<string>(fileNames.Length);
+
                 foreach (string fileName in fileNames)
                 {
                     filteredFileNames.Add(fileName.Trim('"', '"'));
+                }
+
+                var newItems = _context.Files.Where(x => x.IdImage == url);
+
+                List<string> newImages = new();
+
+                foreach(var item in newItems)
+                {
+                    newImages.Add(item.Name);
+                }
+
+                foreach (string fileName in filteredFileNames)
+                {
+                    foreach (var item in newItems) 
+                    {
+                        if(item.Name == fileName)
+                        {
+                            newImages.Remove(item.Name);
+                        }
+                    }
                 }
 
                 MainViewModel viewModel = new()
                 {
                     Images = new ImageViewModel()
                     {
-                        ImagesNames = filteredFileNames
+                        ImagesNames = filteredFileNames,
+                        NewImages = newImages
                     },
                     IsValidUrl = true
                 };
-
 
                 return View(viewModel);
             }
