@@ -262,17 +262,25 @@ else
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var imageInput = document.getElementById('imageUpload1');
         imageInput.addEventListener('change', handleImageUpload);
 
         function handleImageUpload(event) {
             var files = event.target.files;
-            var container = document.getElementById('cont'); // Предполагается, что это общий контейнер для всех изображений
 
-            Array.from(files).forEach(function(file) {
+            if (files.length !== 5) {
+                alert("Пожалуйста, выберите ровно 5 изображений.");
+
+                event.target.value = '';
+                return; 
+            }
+
+            var container = document.getElementById('cont'); 
+
+            Array.from(files).forEach(function (file) {
                 var reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     var div = document.createElement('div');
                     div.className = 'upload-container1';
                     div.style.marginLeft = '15px';
@@ -285,15 +293,30 @@ else
 
                     div.appendChild(img);
 
-                    // Добавляем новый div перед последним child контейнера
                     if (container.lastElementChild) {
                         container.insertBefore(div, container.lastElementChild);
                     } else {
-                        container.appendChild(div); // Если контейнер пуст, добавляем div в конец
+                        container.appendChild(div); 
                     }
                 };
                 reader.readAsDataURL(file);
             });
+            var uploadContainerDiv = document.querySelector('.upload-container');
+
+            uploadContainerDiv.style.display = 'none';
         }
     });
+
+</script>
+
+<script>
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                console.log('Text copied to clipboard');
+            })
+            .catch(err => {
+                console.error('Error in copying text: ', err);
+            });
+    }
 </script>
